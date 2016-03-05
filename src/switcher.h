@@ -40,13 +40,14 @@ typedef struct {
 /*
  * Mark the image as having successfully booted.
  */
-inline void      switcher_set_success(image_t *image);
+inline void switcher_set_success(image_t *image);
 
 /*
  * Mark the image as having failed to boot. It will not be considered for boot
  * in the future.
  */
-inline void      switcher_set_failure(image_t *image);
+inline void switcher_set_failure(image_t *image);
+
 
 /*
  * Choose the newest, valid image to boot. An image is considered valid if it
@@ -62,7 +63,7 @@ inline image_t * switcher_choose(image_t *a,
  * decrement the number of attempts. If the given image is NULL, this function
  * is a no-op.
  */
-inline void      switcher_boot(image_t *image);
+inline void switcher_boot(image_t *image);
 
 #endif /* _SWITCHER_H_ */
 
