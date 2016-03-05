@@ -18,14 +18,14 @@
 #include "crc.h"
 #include "switcher.h"
 
-static inline bool      _can_boot(image_t *image);
+static        bool      _can_boot(image_t *image);
 static inline bool      _checksum_valid(const image_t *image);
 static inline uint8_t * _image_start(const image_t *image);
 
 /*
  * Mark the image as having successfully booted.
  */
-inline void switcher_set_success(image_t *image)
+void switcher_set_success(image_t *image)
 {
 	image->nSuccess = 0;
 }
@@ -33,7 +33,7 @@ inline void switcher_set_success(image_t *image)
 /*
  * Mark the image as having failed to boot.
  */
-inline void switcher_set_failure(image_t *image)
+void switcher_set_failure(image_t *image)
 {
 	image->nFailure = 0;
 }
@@ -42,7 +42,7 @@ inline void switcher_set_failure(image_t *image)
  * Choose the newest valid image to boot. Return NULL if neither image can be
  * booted.
  */
-inline image_t * switcher_choose(image_t *a,
+image_t * switcher_choose(image_t *a,
                                  image_t *b)
 {
 	bool can_boot_a = _can_boot(a);
@@ -64,7 +64,7 @@ inline image_t * switcher_choose(image_t *a,
  * Boot the given image, initializing the stack and instruction pointers. If
  * the given image is NULL, return.
  */
-inline void switcher_boot(image_t *image)
+void switcher_boot(image_t *image)
 {
 	if (!image)
 		return;
@@ -90,7 +90,7 @@ inline void switcher_boot(image_t *image)
  * having succeeded or failed to boot, its checksum will be verified and its
  * validity recorded.
  */
-static inline bool _can_boot(image_t *image)
+static bool _can_boot(image_t *image)
 {
 	if (!image->nFailure)
 		return false;
