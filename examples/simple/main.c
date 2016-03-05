@@ -21,7 +21,7 @@
 #define HEADER_A       ((image_t *volatile)HEADER_ADDR_A)
 #define HEADER_B       ((image_t *volatile)HEADER_ADDR_B)
 
-void __attribute__ ((noreturn)) main(void)
+int main(void)
 {
 	switcher_boot(switcher_choose(HEADER_A, HEADER_B));
 
