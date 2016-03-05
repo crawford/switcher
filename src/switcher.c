@@ -74,7 +74,7 @@ void switcher_boot(image_t *image)
 
 	/* Set the stack pointer to 0
 	   Set the instruction pointer past the header */
-	asm volatile (
+	__asm volatile (
 			"mov sp, %0;"
 			"mov ip, %1;"
 			:
