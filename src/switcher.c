@@ -18,9 +18,11 @@
 #include "crc.h"
 #include "switcher.h"
 
-static        bool      _can_boot(image_t *image);
-static inline bool      _checksum_valid(const image_t *image);
-static inline uint8_t * _image_start(const image_t *image);
+static        bool   _can_boot(image_t *image);
+static inline void   _decrement_attempts(image_t *image);
+static inline bool   _checksum_valid(const image_t *image);
+static inline void * _image_start(const image_t *image);
+static inline void   _boot_address(const void *start) __attribute__ ((noreturn));
 
 /*
  * Mark the image as having successfully booted.
@@ -61,8 +63,7 @@ image_t * switcher_choose(image_t *a,
 }
 
 /*
- * Boot the given image, initializing the stack and instruction pointers. If
- * the given image is NULL, return.
+ * Boot the given image. If the given image is NULL, return.
  */
 void switcher_boot(image_t *image)
 {
@@ -70,19 +71,9 @@ void switcher_boot(image_t *image)
 		return;
 
 	if (image->nSuccess)
-		image->nAttempts = (uint8_t)(image->nAttempts << 1);
+		_decrement_attempts(image);
 
-	/* Set the stack pointer to 0
-	   Set the instruction pointer past the header */
-	__asm volatile (
-			"mov sp, %0;"
-			"mov ip, %1;"
-			:
-			: "r" (0),
-			  "r" (_image_start(image))
-			);
-
-	__builtin_unreachable();
+	_boot_address(_image_start(image));
 }
 
 /*
@@ -115,6 +106,13 @@ static bool _can_boot(image_t *image)
 }
 
 /*
+ * Decrement the number of available boot attempts for the given image.
+ */
+static inline void _decrement_attempts(image_t *image) {
+	image->nAttempts = (image->nAttempts << 1);
+}
+
+/*
  * Determine if the image is valid by running it through a CRC.
  */
 static inline bool _checksum_valid(const image_t *image)
@@ -128,8 +126,25 @@ static inline bool _checksum_valid(const image_t *image)
  * Calculate the start of the image given the header. The header is positioned
  * directly after the image.
  */
-static inline uint8_t * _image_start(const image_t *image)
+static inline void * _image_start(const image_t *image)
 {
-	return ((uint8_t *)image - image->length);
+	return ((void *)image - image->length);
+}
+
+/*
+ * Boot to the given address, initializing the stack and instruction pointers.
+ */
+static inline void _boot_address(const void *start)
+{
+	/* Set the stack pointer to 0
+	   Set the instruction pointer past the header */
+	__asm volatile (
+			"mov sp, %0;"
+			"mov ip, %1;"
+			:
+			: "r" (0),
+			"r" (start));
+
+	__builtin_unreachable();
 }
 
