@@ -1,0 +1,6 @@
+[package]
+name = "switcher"
+version = "0.0.0"
+authors = ["Alex Crawford <alex@switcher.code.acrawford.com>"]
+
+[dependencies]
