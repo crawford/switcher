@@ -17,10 +17,6 @@ themselves as having successfully booted. Otherwise, the next time through the
 boot process, the number of available attempts will be decremented, eventually
 exhausting the available attempts and preventing that image from being used.
 
-Examples of this process can be found in [examples][examples].
-
-[examples]: examples
-
 ## Flash Layout ##
 
 The layout of the flash must be compatible with the internal structures in
