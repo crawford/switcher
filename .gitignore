@@ -1,4 +1,2 @@
-*.swp
-*.o
 target/
 **/*.rs.bk
